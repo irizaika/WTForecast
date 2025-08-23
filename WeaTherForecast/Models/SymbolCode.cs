@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace WTForecast
+namespace WTForecast.Models
 {
 
     public enum SymbolCode

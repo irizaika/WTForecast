@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WTForecast
+namespace WTForecast.Models
 {
     public static class WeatherMood
     {

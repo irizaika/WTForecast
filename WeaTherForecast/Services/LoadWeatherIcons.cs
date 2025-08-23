@@ -1,7 +1,7 @@
 ﻿/*
     ONE TIME Method to load weather icons from OpenWeatherMap
 */
-namespace WTForecast
+namespace WTForecast.Services
 {
     class LoadWeatherIcons
     {
