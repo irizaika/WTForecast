@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
-             x:Class="WTForecast.MainPage"
-             BackgroundColor="#111">
-
+             xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls" 
+             xmlns:mc="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             x:Class="WTForecast.Views.MainPage" xmlns:pageModels="clr-namespace:WTForecast.ViewModels" BackgroundColor="#111">
     <Grid>
         <!-- Background Effects -->
         <BoxView Opacity="1" InputTransparent="True">
@@ -15,120 +14,41 @@
                 </RadialGradientBrush>
             </BoxView.Background>
         </BoxView>
-
-       <!-- Main Content -->
+        <!-- Main Content -->
         <ScrollView>
             <VerticalStackLayout Padding="5" Spacing="5" >
                 <!-- Title -->
-                <Label Text="WTForecast  &#176;"
-                       FontSize="34"
-                       FontAttributes="Bold"
-                       TextColor="White"
-                       HorizontalTextAlignment="Center"
-                       Margin="0" />
-
-                <!-- Weather Card -->
-                <Frame Padding="0"
-                       CornerRadius="30"
-                       BackgroundColor="#11FFFFFF"
-                       HasShadow="True"
-                       Margin="0">
-
+                <Label Text="WTForecast &#176;" FontSize="34" FontAttributes="Bold" TextColor="White" HorizontalTextAlignment="Center" Margin="0" />
+                <!-- Current Weather Card -->
+                <Frame Padding="0" CornerRadius="30" BackgroundColor="#11FFFFFF" HasShadow="True" Margin="0">
                     <VerticalStackLayout Spacing="0" HorizontalOptions="Center" >
-                        <!-- Weather Icon -->
-                        <Image x:Name="WeatherIcon" HeightRequest="80" WidthRequest="80" IsVisible="False" />
-
-                        <!-- Temperature -->
-                        <Label x:Name="TemperatureLabel"
-                               FontSize="46"
-                               FontAttributes="Bold"
-                               TextColor="White"
-                               HorizontalTextAlignment="Center" />
-
-                        <!-- Condition -->
-                        <Label x:Name="ConditionLabel"
-                               FontSize="22"
-                               TextColor="#E0E0E0"
-                               HorizontalTextAlignment="Center" />
-
+                        <Image x:Name="WeatherIcon" Source="{Binding IconPath}" IsVisible="{Binding IconVisible}" HeightRequest="80" WidthRequest="80" />
+                        <Label x:Name="TemperatureLabel" Text="{Binding TemperatureText}" FontSize="46" FontAttributes="Bold" TextColor="White" HorizontalTextAlignment="Center" />
+                        <Label x:Name="ConditionLabel" Text="{Binding ConditionText}" FontSize="22" TextColor="#E0E0E0" HorizontalTextAlignment="Center" />
                         <!-- Message/Joke -->
-                        <!--<Label x:Name="MessageLabel"
-                               FontSize="18"
-                               FontAttributes="Italic"
-                               TextColor="#FFD700"
-                               HorizontalTextAlignment="Center" />-->
-
+                        <!--<Label x:Name="MessageLabel" FontSize="18" FontAttributes="Italic" TextColor="#FFD700" HorizontalTextAlignment="Center" />-->
                         <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
-                            <!-- Wind Info -->
-                            <Label x:Name="WindLabel"
-                                   FontSize="18"
-                                   TextColor="#DDDDDD"
-                                   VerticalOptions="Center"
-                                   HorizontalTextAlignment="Center" />
-
-                            <!-- Wind Direction Arrow -->
-                            <Label x:Name="WindArrow"
-                                   Text="↑"
-                                   TextColor="#DDDDDD"
-                                   FontSize="32"
-                                   VerticalOptions="Center"/>
+                            <Label x:Name="WindLabel" Text="{Binding WindText}" FontSize="18" TextColor="#DDDDDD" VerticalOptions="Center" HorizontalTextAlignment="Center" />
+                            <Label x:Name="WindArrow" Text="↑" Rotation="{Binding WindRotation}" IsVisible="{Binding WindRotationVisible}"  TextColor="#DDDDDD" FontSize="32" VerticalOptions="Center"/>
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </Frame>
-                
-                <!-- Weather Card -->
-                <Frame Padding="0"
-                       CornerRadius="30"
-                       BackgroundColor="#11FFFFFF"
-                       HasShadow="True"
-                       Margin="0">
-                    <VerticalStackLayout  Padding="0" Margin="0">
-            <!-- Weather Chart -->
-                        <skia:SKCanvasView x:Name="WeatherChart"
-                                   PaintSurface="OnCanvasViewPaintSurface"
-                                   VerticalOptions="FillAndExpand"
-                                   HorizontalOptions="FillAndExpand"
-                                   HeightRequest="250"
-                                   IsVisible="True" />
-                    <!-- Rain Chart -->
-                    <skia:SKCanvasView x:Name="RainChart"
-                                   PaintSurface="OnRainCanvasViewPaintSurface"
-                                   VerticalOptions="FillAndExpand"
-                                       Margin="0"
-                                       HorizontalOptions="FillAndExpand"
-                                       HeightRequest="50"
-                                       IsVisible="True" />
-
+                <!-- Todays Weather Card -->
+                <Frame Padding="0" CornerRadius="30" BackgroundColor="#11FFFFFF" HasShadow="True" Margin="0">
+                    <VerticalStackLayout Padding="0" Margin="0">
+                        <mc:ChartView x:Name="WeatherChart" Chart="{Binding HourlyTemperatureChart}" PaintSurface="OnCanvasViewPaintSurface" HeightRequest="250" IsVisible="True" VerticalOptions="FillAndExpand" Margin="0" HorizontalOptions="FillAndExpand"/>
+                        <mc:ChartView x:Name="RainChart" Chart="{Binding HourlyRainChart}" PaintSurface="OnRainCanvasViewPaintSurface" HeightRequest="50" IsVisible="True" VerticalOptions="FillAndExpand" Margin="0" HorizontalOptions="FillAndExpand"/>
                     </VerticalStackLayout>
                 </Frame>
-
-                <!-- Weather Card -->
-                <Frame Padding="0"
-                       CornerRadius="30"
-                       BackgroundColor="#11FFFFFF"
-                       HasShadow="True"
-                       Margin="0">
-                    <!-- Weather Chart -->
-                    <VerticalStackLayout  Padding="0" Margin="0">
-            <skia:SKCanvasView x:Name="DailyMinMaxChart"
-                           PaintSurface="OnMinMaxDailyCanvasViewPaint"
-                           VerticalOptions="FillAndExpand"
-                           HorizontalOptions="FillAndExpand"
-                           HeightRequest="200"
-                                Margin="0"
-                           IsVisible="True" />
-
-                        <skia:SKCanvasView x:Name="DailyRainChart"
-                                   PaintSurface="OnDailyRainCanvasViewPaintSurface"
-                                   VerticalOptions="FillAndExpand"
-                                   HorizontalOptions="FillAndExpand"
-                                   HeightRequest="150"
-                                   Margin="0"
-                                   IsVisible="True" />
+                <!-- Daily Weather Card -->
+                <Frame Padding="0" CornerRadius="30" BackgroundColor="#11FFFFFF" HasShadow="True" Margin="0">
+                    <VerticalStackLayout Padding="0" Margin="0">
+                        <mc:ChartView x:Name="DailyMinMaxChart" PaintSurface="OnMinMaxDailyCanvasViewPaint"  Chart="{Binding DailyMinMaxChart}" HeightRequest="200" VerticalOptions="FillAndExpand" Margin="0" HorizontalOptions="FillAndExpand" />
+                        <mc:ChartView x:Name="DailyRainChart" PaintSurface="OnDailyRainCanvasViewPaintSurface" Chart="{Binding DailyRainChart}" HeightRequest="150" VerticalOptions="FillAndExpand" Margin="0" HorizontalOptions="FillAndExpand" />
                     </VerticalStackLayout>
                 </Frame>
-
             </VerticalStackLayout>
         </ScrollView>
     </Grid>
 </ContentPage>
+    

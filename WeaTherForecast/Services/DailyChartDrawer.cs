@@ -4,9 +4,9 @@ using WTForecast.Utils;
 
 namespace WTForecast.Services
 {
-    public class DailyChartDrawer
+    public static class DailyChartDrawer
     {
-        public void DrawTemperatureRange(SKCanvas canvas, SKImageInfo info, List<DailyTemperatureRangeData> dailyTemperatureRangeData)
+        public static void DrawTemperatureRange(SKCanvas canvas, SKImageInfo info, List<DailyTemperatureRangeData> dailyTemperatureRangeData)
         {
             if (dailyTemperatureRangeData.Count == 0)
                 return;
@@ -46,7 +46,7 @@ namespace WTForecast.Services
             DisplayUtils.DrawTemperatureCurve(canvas, minDailyTemperatures, dailyDates, DisplayUtils.GetTemperatureColor, xStep, margin, height, GetY, font, valueLabelPaint, false);
         }
 
-        public void DrawRainAmount(SKCanvas canvas, SKImageInfo info, List<DailyRainAmountData> dailyRainAmountData)
+        public static void DrawRainAmount(SKCanvas canvas, SKImageInfo info, List<DailyRainAmountData> dailyRainAmountData)
         {
             if (dailyRainAmountData.Count == 0)
                 return;

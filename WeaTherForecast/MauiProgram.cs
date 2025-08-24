@@ -1,12 +1,8 @@
-﻿using Microcharts.Maui;
-using Microsoft.Maui.Handlers;
-using Microsoft.Extensions.Logging;
-using SkiaSharp;
-using SkiaSharp.Views.Maui;
-using SkiaSharp.Views.Maui.Controls;
+﻿using Microsoft.Extensions.Logging;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using WTForecast.Services;
-using WTForecast.Utils;
+using WTForecast.ViewModels;
+using WTForecast.Views;
 
 namespace WTForecast;
 
@@ -39,8 +35,11 @@ public static class MauiProgram
 		builder.Services.AddSingleton<LocationService>();
 		builder.Services.AddSingleton<WeatherMapper>();
 		builder.Services.AddSingleton<ChartService>();
-		builder.Services.AddSingleton<DailyChartDrawer>();
 		builder.Services.AddSingleton<WeatherFacade>();
+
+        builder.Services.AddSingleton<MainPageViewModel>();
+        builder.Services.AddSingleton<MainPage>();
+
 
         return builder.Build();
 	}
