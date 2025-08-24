@@ -38,6 +38,12 @@ public partial class MainPageViewModel : ObservableObject
     [ObservableProperty]
     List<DailyTemperatureRangeData> _dailyTemperatureRanges = new();
 
+    [ObservableProperty]
+    bool _isLoading;
+
+    [ObservableProperty]
+    bool _isRefreshing;
+
     public MainPageViewModel(WeatherFacade weatherFacade, WeatherMapper weatherMapper,
         ChartService chartService)
     {
@@ -49,29 +55,51 @@ public partial class MainPageViewModel : ObservableObject
     [RelayCommand]
     public async Task LoadWeatherDataAsync()
     {
-        var (weatherData, todaysWeather) = await _weatherFacade.LoadWeatherAsync();
-        if (weatherData == null || todaysWeather == null) return;
+        try
+        {
+            IsLoading = true;
+            var (weatherData, todaysWeather) = await _weatherFacade.LoadWeatherAsync();
+            if (weatherData == null || todaysWeather == null) return;
 
-        // Labels
-        var displayModel = _weatherMapper.BuildDisplayModel(weatherData);
-        ConditionText = displayModel.ConditionText;
-        TemperatureText = displayModel.TemperatureText;
-        IconPath = displayModel.IconPath;
-        IconVisible = true;
-        WindText = displayModel.WindText;
-        WindRotation = (double)displayModel.WindRotation;
-        WindRotationVisible = true;
+            // Labels
+            var displayModel = _weatherMapper.BuildDisplayModel(weatherData);
+            ConditionText = displayModel.ConditionText;
+            TemperatureText = displayModel.TemperatureText;
+            IconPath = displayModel.IconPath;
+            IconVisible = true;
+            WindText = displayModel.WindText;
+            WindRotation = (double)displayModel.WindRotation;
+            WindRotationVisible = true;
 
-        DailyTemperatureRanges = _weatherMapper.GetDailyTemperatureRangeData(weatherData);
+            DailyTemperatureRanges = _weatherMapper.GetDailyTemperatureRangeData(weatherData);
 
-        DailyRainAmount = _weatherMapper.GetDailyRainAmountData(weatherData);
+            DailyRainAmount = _weatherMapper.GetDailyRainAmountData(weatherData);
 
-        HourlyTemperatureChart = _chartService.CreateHourlyTemperatureChart(
-            _weatherMapper.GetTodaysHourlyTemperatureChartEnties(todaysWeather),
-            todaysWeather.minTemperature, todaysWeather.maxTemperature);
+            HourlyTemperatureChart = _chartService.CreateHourlyTemperatureChart(
+                _weatherMapper.GetTodaysHourlyTemperatureChartEnties(todaysWeather),
+                todaysWeather.minTemperature, todaysWeather.maxTemperature);
 
-        HourlyRainChart = _chartService.CreateHourlyRainChart(
-            _weatherMapper.GetTodaysHourlyRainChartEnties(todaysWeather),
-            todaysWeather.maxRain);
+            HourlyRainChart = _chartService.CreateHourlyRainChart(
+                _weatherMapper.GetTodaysHourlyRainChartEnties(todaysWeather),
+                todaysWeather.maxRain);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    [RelayCommand]
+    async Task ReloadWeatherAsync()
+    {
+        try
+        {
+            IsRefreshing = true;
+            await LoadWeatherDataAsync();
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
     }
 }

@@ -4,7 +4,6 @@ using WTForecast.Services;
 using WTForecast.ViewModels;
 
 /* TODO 
- * add amination while data loadig, 
  * improve UI, 
  * add notifications in the morning, in the evening to tomorrow and whe rain starts, 
  * add reload data on background
