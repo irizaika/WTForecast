@@ -24,10 +24,10 @@ namespace WTForecast.Services
             var maxTemp = shortWeathers.Max(x => x.temperature);
             var maxRain = shortWeathers.Max(x => x.precipitationAmount);
 
-            foreach (ShortWeather entry in shortWeathers)
-            {
-                Logger.LogAsync($"entry.temperature = {entry.temperature}, entry.dateTime = {entry.dateTime}");
-            }
+            //foreach (ShortWeather entry in shortWeathers)
+            //{
+            //    Logger.LogAsync($"entry.temperature = {entry.temperature}, entry.dateTime = {entry.dateTime}");
+            //}
 
             return new ShortWeatherData()
             {
@@ -90,7 +90,6 @@ namespace WTForecast.Services
             }).ToList();
         }
 
-
         public List<DailyTemperatureRangeData> GetDailyTemperatureRangeData(WeatherData weatherData)
         {
             // Group timeseries entries by date, skip today's date
@@ -106,6 +105,34 @@ namespace WTForecast.Services
                 }).Take(9)
                 .ToList();
         }
+
+        public List<DailyRainAmountData> GetDailyIconData(WeatherData weatherData)
+        {
+            // Group timeseries entries by date, skip today's date
+            var today = DateTime.Now.Date;
+
+            return weatherData.properties.timeseries
+                .Where(ts => ts.time.Date > today)
+                .GroupBy(ts => ts.time.Date)
+                .Select(g =>
+                {
+                    // Find times at 00:00, 06:00, 12:00, 18:00
+                    var sixHourEntries = g.Where(ts =>
+                        ts.time.Hour == 0 || ts.time.Hour == 6 || ts.time.Hour == 12 || ts.time.Hour == 18);
+
+                    // Sum precipitation_amount from next_6_hours.details if available, else 0
+                    List<string> rainSum = sixHourEntries.Select(ts => ts.data.next_6_hours?.summary?.symbol_code ?? "").ToList();
+
+                    return new DailyRainAmountData
+                    {
+                        date = g.Key.ToLocalTime(),
+                      //  sumRain = (float)rainSum
+                    };
+                }).Take(9)
+                .ToList();
+        }
+
+
         public List<DailyRainAmountData> GetDailyRainAmountData(WeatherData weatherData)
         {
             var today = DateTime.Now.Date;

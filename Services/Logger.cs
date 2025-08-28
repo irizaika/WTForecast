@@ -1,6 +1,6 @@
 ﻿public static class Logger
 {
-    private static readonly string LogFilePath = Path.Combine("C:\\Users\\iriku\\source\\repos\\WTForecast", "app.log");
+    private static readonly string LogFilePath = Path.Combine("C:\\Users\\iriku\\source\\repos\\WeaTherForecast\\WeaTherForecast", "app.log");
 
     public static async Task LogAsync(string message)
     {
