@@ -1,0 +1,5 @@
+﻿
+dotnet tool install --global Nswag.ConsoleCore
+
+nswag openapi2csclient /input:https://api.met.no/weatherapi/locationforecast/2.0/swagger
+/classname:MetForecastClient /namespace:WTForecast.OpenAPIs /output:WeaTherForecast/OpenAPIs/MetForecastClient.cs

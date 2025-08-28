@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using WTForecast.Services;
 using WTForecast.ViewModels;
@@ -11,7 +11,12 @@ public static class MauiProgram
 	public static MauiApp CreateMauiApp()
 	{
 		var builder = MauiApp.CreateBuilder();
-		builder
+
+        builder.Configuration
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true);
+
+        builder
 			.UseMauiApp<App>()
 			.ConfigureFonts(fonts =>
 			{
@@ -25,12 +30,6 @@ public static class MauiProgram
 
         builder.UseSkiaSharp();
 
-		// Register the ChartView handler
-		//builder.ConfigureMauiHandlers(handlers =>
-		//{
-		//	handlers.AddHandler<ChartView, Cha>();
-		//});
-
 		builder.Services.AddSingleton<WeatherService>();
 		builder.Services.AddSingleton<LocationService>();
 		builder.Services.AddSingleton<WeatherMapper>();
@@ -39,7 +38,6 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<MainPageViewModel>();
         builder.Services.AddSingleton<MainPage>();
-
 
         return builder.Build();
 	}

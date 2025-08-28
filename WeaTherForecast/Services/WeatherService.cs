@@ -1,23 +1,27 @@
-﻿using Newtonsoft.Json;
-using System.Diagnostics;
-using System.Net.Http.Headers;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace WTForecast.Services;
 
 public class WeatherService
 {
     private readonly HttpClient _httpClient;
+    private readonly string _baseUrl;
 
-    public WeatherService()
+    public WeatherService(IConfiguration config)
     {
         _httpClient = new HttpClient();
-        _httpClient.DefaultRequestHeaders.UserAgent.Add(
-            new ProductInfoHeaderValue("WTForecast", "1.0"));
+    
+        var userAgent = config["WeatherApi:UserAgent"] ?? "WTForecast/1.0 (https://github.com/yourusername/WTForecast; contact@example.com)";
+
+        _baseUrl = config["WeatherApi:BaseUrl"] ?? "https://api.met.no/weatherapi/locationforecast/2.0";
+
+        _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
     }
 
     public async Task<WeatherData?> GetWeatherDataAsync(string lat, string lon)
     {
-        var url = $"https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={lat}&lon={lon}";
+        var url = $"{_baseUrl}/compact?lat={lat}&lon={lon}";
         var response = await _httpClient.GetStringAsync(url);
 
         try
